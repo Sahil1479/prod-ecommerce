@@ -1,0 +1,99 @@
+Backend
+
+mkdir ecommerce-backend && cd ecommerce-backend
+
+python -m venv venv
+
+venv\Scripts\activate
+
+pip install django djangorestframework psycopg2-binary djangorestframework-simplejwt
+
+django-admin startproject ecommerce .
+
+python manage.py startapp users
+python manage.py startapp products
+python manage.py startapp orders
+
+Install Postgres
+
+CREATE DATABASE ecommerce_db;
+CREATE USER ecommerce_user WITH PASSWORD 'ecommerce_pass';
+ALTER ROLE ecommerce_user SET client_encoding TO 'utf8';
+ALTER ROLE ecommerce_user SET default_transaction_isolation TO 'read committed';
+ALTER ROLE ecommerce_user SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE ecommerce_db TO ecommerce_user;
+
+✅ Fix: Grant schema permissions
+
+Log in to PostgreSQL as postgres (superuser):
+
+psql -U postgres
+
+Connect to your DB:
+
+\c ecommerce_db;
+
+Grant privileges to your user:
+
+GRANT ALL PRIVILEGES ON SCHEMA public TO ecommerce_user;
+ALTER USER ecommerce_user CREATEDB;
+
+
+Also make sure ownership is correct:
+
+ALTER DATABASE ecommerce_db OWNER TO ecommerce_user;
+ALTER SCHEMA public OWNER TO ecommerce_user;
+
+Configure Database in ecommerce/settings.py
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ecommerce_db',
+        'USER': 'ecommerce_user',
+        'PASSWORD': 'ecommerce_pass',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+Add Installed Apps
+
+In ecommerce/settings.py:
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    # Third-party
+    'rest_framework',
+    'rest_framework_simplejwt',
+
+    # Local apps
+    'users',
+    'products',
+    'orders',
+]
+
+Configure DRF + JWT
+
+In ecommerce/settings.py:
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+Run Initial Migrations
+python manage.py makemigrations
+python manage.py migrate
+
+Create Superuser
+python manage.py createsuperuser
+
+Run Server
+python manage.py runserver

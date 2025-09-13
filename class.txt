@@ -1,0 +1,81 @@
+---
+
+# 🛒 E-Commerce App — ER Model
+
+## Entities & Attributes
+
+### **USER**
+
+* `id` (PK)
+* `username`
+* `email`
+* `password`
+* `role` (admin, seller, customer)
+
+### **CATEGORY**
+
+* `id` (PK)
+* `name`
+* `parent_id` (FK → Category.id, for subcategories)
+
+### **PRODUCT**
+
+* `id` (PK)
+* `name`
+* `description`
+* `price`
+* `stock`
+* `category_id` (FK → Category.id)
+* `seller_id` (FK → User.id, seller role)
+
+### **CART**
+
+* `id` (PK)
+* `user_id` (FK → User.id)
+
+### **CART\_ITEM**
+
+* `id` (PK)
+* `cart_id` (FK → Cart.id)
+* `product_id` (FK → Product.id)
+* `quantity`
+
+### **ORDER**
+
+* `id` (PK)
+* `user_id` (FK → User.id)
+* `created_at`
+* `status` (pending, paid, shipped, delivered, cancelled)
+* `total_price`
+
+### **ORDER\_ITEM**
+
+* `id` (PK)
+* `order_id` (FK → Order.id)
+* `product_id` (FK → Product.id)
+* `quantity`
+* `price` (snapshot of product price at order time)
+
+### **REVIEW**
+
+* `id` (PK)
+* `user_id` (FK → User.id)
+* `product_id` (FK → Product.id)
+* `rating` (1–5)
+* `comment`
+
+---
+
+## Relationships
+
+* **User → Order**: One user can place many orders.
+* **User → Cart**: One user has one cart.
+* **User → Review**: One user can write many reviews.
+* **Category → Product**: One category contains many products.
+* **Product → CartItem**: A product can appear in many carts.
+* **Product → OrderItem**: A product can appear in many orders.
+* **Product → Review**: A product can have many reviews.
+* **Cart → CartItem**: A cart contains many cart items.
+* **Order → OrderItem**: An order contains many order items.
+
+---

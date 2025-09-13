@@ -1,0 +1,187 @@
+---
+
+# 🛒 E-Commerce App (Backend with Django REST Framework)
+
+---
+
+## 1. Requirement Analysis
+
+### Functional Requirements
+
+* **User Authentication & Authorization**
+
+  * JWT-based signup/login
+  * Roles: `Admin`, `Seller`, `Customer`
+* **Product Management**
+
+  * CRUD for products (Admin/Seller only)
+  * Categories & subcategories
+* **Shopping Cart & Checkout**
+
+  * Add/remove items
+  * Place order → Payment workflow
+* **Order Management**
+
+  * Customers track orders
+  * Admin/Seller update status
+* **Reviews & Ratings**
+
+  * Customers review purchased products
+* **Search & Filtering**
+
+  * Search products by name/description/category
+* **Pagination**
+
+  * Paginated product listings
+* **Caching**
+
+  * Cache frequently viewed products/categories
+* **Rate Limiting**
+
+  * Protect checkout/add-to-cart APIs
+* **Logging & Error Handling**
+
+  * Centralized error & access logs
+* **API Versioning**
+
+  * `/api/v1/` (basic), `/api/v2/` (extended features)
+
+### Non-Functional Requirements
+
+* Secure APIs (JWT, CSRF for admin panel)
+* Database indexing (products, orders)
+* Queues/Kafka for async tasks (emails, events)
+* Scalable with Redis caching + Celery
+
+---
+
+## 2. Use Case Diagram
+
+**Actors**
+
+* Customer
+* Seller
+* Admin
+* System (Payment Gateway, Kafka/Queue)
+
+**Use Cases**
+
+* Customer: signup, login, browse, search, add to cart, checkout, view orders, review
+* Seller: add/update/delete products, manage stock, view orders
+* Admin: manage users/products, handle escalations
+
+📌 Tools for drawing:
+
+* [draw.io](https://app.diagrams.net/)
+* [lucidchart](https://www.lucidchart.com/)
+
+---
+
+## 3. Tech Stack (Backend)
+
+* **Framework:** Django + Django REST Framework
+* **Database:** PostgreSQL (with indexing)
+* **Cache:** Redis
+* **Queue/Event System:** Kafka (or Celery + Redis)
+* **Auth:** JWT (`djangorestframework-simplejwt`)
+
+---
+
+## 4. Implementation Plan
+
+### 📍 Phase 1: Setup & Basic CRUD
+
+1. Create Django project & apps (`users`, `products`, `orders`)
+
+   * [Django setup](https://docs.djangoproject.com/en/5.0/intro/tutorial01/)
+   * [DRF quickstart](https://www.django-rest-framework.org/tutorial/quickstart/)
+2. Configure PostgreSQL
+
+   * [Django + PostgreSQL](https://docs.djangoproject.com/en/5.0/ref/databases/#postgresql-notes)
+3. Custom User Model with Roles
+
+   * [Custom User Model](https://testdriven.io/blog/django-custom-user-model/)
+4. JWT Authentication
+
+   * [SimpleJWT setup](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html)
+5. Product CRUD APIs (restricted to seller/admin)
+
+   * [DRF ViewSets](https://www.django-rest-framework.org/api-guide/viewsets/)
+
+---
+
+### 📍 Phase 2: Cart & Orders
+
+6. Shopping Cart Model (per user)
+
+   * [DRF Relations](https://www.django-rest-framework.org/tutorial/relations/)
+7. Orders & Checkout
+
+   * Order model linked with user & cart items
+   * Mock payment flow
+
+---
+
+### 📍 Phase 3: Reviews, Pagination, Search
+
+8. Reviews Model (only for purchased products)
+
+   * [DRF Serializer Validation](https://www.django-rest-framework.org/api-guide/serializers/#validation)
+9. Pagination
+
+   * [DRF Pagination](https://www.django-rest-framework.org/api-guide/pagination/)
+10. Search & Filtering
+
+* [DRF Filtering](https://www.django-rest-framework.org/api-guide/filtering/)
+* [Postgres Full Text Search](https://docs.djangoproject.com/en/5.0/ref/contrib/postgres/search/)
+
+---
+
+### 📍 Phase 4: Advanced Features
+
+11. Rate Limiting (Throttling)
+
+* [DRF Throttling](https://www.django-rest-framework.org/api-guide/throttling/)
+
+12. Caching with Redis
+
+* [Django caching](https://docs.djangoproject.com/en/5.0/topics/cache/)
+* [Redis + Django](https://realpython.com/caching-in-django-with-redis/)
+
+13. Logging & Error Handling
+
+* [Django Logging](https://docs.djangoproject.com/en/5.0/topics/logging/)
+
+14. Queues for async tasks (order confirmation, notifications)
+
+* [Celery + Django](https://docs.celeryq.dev/en/stable/django/first-steps-with-django.html)
+* [Kafka Python](https://kafka-python.readthedocs.io/en/master/)
+
+15. API Versioning
+
+* [DRF Versioning](https://www.django-rest-framework.org/api-guide/versioning/)
+
+---
+
+## 5. Suggested Directory Structure
+
+```
+ecommerce/
+├── backend/
+│   ├── ecommerce/        # project settings
+│   ├── users/            # custom user model, auth
+│   ├── products/         # product, category, reviews
+│   ├── orders/           # cart, orders
+│   ├── core/             # logging, caching utils
+│   └── requirements.txt
+```
+
+---
+
+## 6. Interview Strategy
+
+* Start with **core models & CRUD** (users, products, orders) → working API
+* Add **auth & roles** → restricted access demonstration
+* Show **pagination & search** → proves scalability
+* Add **caching & rate-limiting** → performance concerns
+* Finally **mention queues & API versioning** (implement if time permits)
