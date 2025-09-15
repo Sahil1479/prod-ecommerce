@@ -1,0 +1,8 @@
+{"timestamp": "2025-09-14 23:56:08,626", "level": "INFO", "logger": "ecommerce","event": "fetch_products_start", "payload": "{'path': '/api/v1/products/'}"}
+{"timestamp": "2025-09-14 23:56:08,715", "level": "INFO", "logger": "ecommerce","event": "fetch_products_success", "payload": "{'count': 1}"}
+{"timestamp": "2025-09-14 23:58:49,490", "level": "INFO", "logger": "ecommerce","event": "fetch_product_details_start", "payload": "{'product_id': 1}"}
+{"timestamp": "2025-09-14 23:58:49,582", "level": "INFO", "logger": "ecommerce","event": "fetch_product_details_cache_set", "payload": "{'product_id': 1}"}
+{"timestamp": "2025-09-14 23:58:49,583", "level": "INFO", "logger": "ecommerce","event": "fetch_product_details_success", "payload": "{'product_id': 1}"}
+{"timestamp": "2025-09-14 23:59:00,267", "level": "INFO", "logger": "ecommerce","event": "fetch_product_details_start", "payload": "{'product_id': 1}"}
+{"timestamp": "2025-09-14 23:59:00,267", "level": "INFO", "logger": "ecommerce","event": "fetch_product_details_cache_hit", "payload": "{'product_id': 1}"}
+{"timestamp": "2025-09-14 23:59:00,268", "level": "INFO", "logger": "ecommerce","event": "fetch_product_details_success", "payload": "{'product_id': 1}"}

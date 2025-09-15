@@ -26,6 +26,18 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+# -----------------------------
+# Product Subscription Model
+# -----------------------------
+class ProductSubscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} subscribed to {self.product.name}"
+
 
 # -----------------------------
 # Review Model

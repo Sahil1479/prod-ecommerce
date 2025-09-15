@@ -149,6 +149,17 @@ REST_FRAMEWORK = {
 
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,  # default items per page
+
+    # Throttling settings
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "50/hour",   # anonymous users → 50 requests per hour
+        "user": "200/hour",  # authenticated users → 200 requests per hour
+        "product_subscription": "5/minute",  # product subscription → 5 per minute
+    }
 }
 
 AUTH_USER_MODEL = "users.User"
@@ -184,3 +195,50 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "Asia/Kolkata"
+
+
+# Logging configuration
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    "formatters": {
+        "json": {
+            "format": (
+                '{{"timestamp": "{asctime}", "level": "{levelname}", '
+                '"logger": "{name}",'
+                '"event": "{event}", "payload": "{payload}"}}'
+            ),
+            "style": "{",
+        },
+    },
+
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "json",
+        },
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": LOG_DIR / "app.json.log",
+            "formatter": "json",
+        },
+        "error_file": {
+            "class": "logging.FileHandler",
+            "filename": LOG_DIR / "errors.json.log",
+            "formatter": "json",
+            "level": "ERROR",
+        },
+    },
+
+    "loggers": {
+        "ecommerce": {  # single project namespace
+            "handlers": ["console", "file", "error_file"],
+            "level": "INFO",  # INFO in prod, DEBUG for dev
+            "propagate": False,
+        },
+    },
+}
