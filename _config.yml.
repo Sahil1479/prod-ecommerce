@@ -1,0 +1,5 @@
+title: Development Documentations
+theme: minima
+markdown_ext: "md,markdown"
+include:
+  - ecommerce-backend/implementations
