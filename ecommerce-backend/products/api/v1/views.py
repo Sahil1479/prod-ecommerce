@@ -23,6 +23,13 @@ from products.throttles import ProductSubscriptionThrottle
 # Logging imports
 from ecommerce.logging_helper import log_event
 
+# Filtering and Search imports
+from rest_framework import generics
+from django.contrib.postgres.search import SearchQuery, SearchRank, TrigramSimilarity
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
+from products.filters import ProductFilter
+
 # Pagination imports
 from rest_framework.pagination import PageNumberPagination
 
@@ -244,3 +251,41 @@ class ProductUnsubscribeAPIView(APIView):
         subscription = get_object_or_404(ProductSubscription, pk=pk, user=request.user)
         subscription.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProductSearchAPIView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_class = ProductFilter
+    ordering_fields = ["price", "name"]
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        query = self.request.query_params.get("q")
+        ordering = self.request.query_params.get("ordering")
+
+        if query:
+            search_query = SearchQuery(query)
+            
+            # First try full-text search (FTS)
+            queryset = queryset.annotate(
+                rank=SearchRank("search_vector", search_query),
+                similarity=TrigramSimilarity("name", query),
+            ).filter(search_vector=search_query)
+
+            # ✅ If FTS found nothing → fallback to trigram fuzzy search
+            if not queryset.exists():
+                log_event("fts_no_results", payload={"query": query}, level="INFO")
+                queryset = Product.objects.annotate(
+                    similarity=TrigramSimilarity("name", query),
+                ).filter(similarity__gt=0.1)  # <-- lower threshold
+                queryset = queryset.order_by("-similarity")
+            else:
+                # only apply rank ordering if rank is available
+                if not ordering:
+                    queryset = queryset.order_by("-rank", "-similarity")
+            
+            for p in queryset:
+                print(p.name, p.similarity)
+        
+        return queryset

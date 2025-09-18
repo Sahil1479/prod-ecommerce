@@ -2,6 +2,10 @@ from django.db import models
 from users.models import User 
 from django.core.validators import MaxValueValidator
 
+# Indexing imports
+from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.indexes import GinIndex
+
 # -----------------------------
 # Category Model (with self relation for subcategories)
 # -----------------------------
@@ -23,6 +27,13 @@ class Product(models.Model):
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     seller = models.ForeignKey(User, related_name="products", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    search_vector = SearchVectorField(null=True, blank=True)  # For full-text search
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["price"]),
+            GinIndex(fields=["search_vector"]),
+        ]
 
     def __str__(self):
         return self.name

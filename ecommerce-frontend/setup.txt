@@ -1,0 +1,8 @@
+# 1. Create project
+npx create-react-app my-app
+
+# 2. Go into folder
+cd my-app
+
+# 3. Start dev server
+npm start

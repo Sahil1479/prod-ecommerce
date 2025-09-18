@@ -1,2 +1,9 @@
 python -m venv venv
 source venv/bin/activate
+pip install -r dependencies.txt
+brew services start postgresql
+To stop postgresql => brew services stop postgresql
+
+To launch psql => psql postgres
+Create DB with name "master" with owner "postgres" => CREATE DATABASE master OWNER postgres;
+Add all previleges to user "postgres" for DB "master" => GRANT ALL PRIVILEGES ON DATABASE master TO myuser;

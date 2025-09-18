@@ -1,0 +1,6 @@
+{
+  "venvPath": "",
+  "venv": "venv",  // name of your virtualenv folder
+  "reportMissingImports": true,
+  "reportMissingModuleSource": false
+}

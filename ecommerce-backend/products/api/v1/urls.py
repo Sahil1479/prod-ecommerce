@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ProductListAPIView, ProductDetailAPIView, CategoryListAPIView, CategoryDetailAPIView, ProductSubscriptionAPIView, ProductUnsubscribeAPIView, ReviewListCreateAPIView, ReviewDetailAPIView, ProductSubscriptionAPIView, ProductUnsubscribeAPIView
+from .views import ProductListAPIView, ProductDetailAPIView, CategoryListAPIView, CategoryDetailAPIView, ProductSubscriptionAPIView, ProductUnsubscribeAPIView, ReviewListCreateAPIView, ReviewDetailAPIView, ProductSubscriptionAPIView, ProductUnsubscribeAPIView, ProductSearchAPIView
 
 urlpatterns = [
     path("", ProductListAPIView.as_view(), name="product-list-v1"),
@@ -10,4 +10,5 @@ urlpatterns = [
     path("<int:product_id>/subscribe/", ProductSubscriptionAPIView.as_view(), name="product-subscribe"),
     path("<int:product_id>/unsubscribe/", ProductUnsubscribeAPIView.as_view(), name="product-unsubscribe"),
     path("reviews/<int:pk>/", ReviewDetailAPIView.as_view(), name="review-detail-v1"),
+    path("search/", ProductSearchAPIView.as_view(), name="product-search-v1"),
 ]
